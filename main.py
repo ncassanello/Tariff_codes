@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Query
-from typing import List
+from typing import List, Dict
 
 # Simulación de base de datos de clasificación arancelaria
 nomenclador_sistema_armonizado = [
@@ -10,9 +10,9 @@ nomenclador_sistema_armonizado = [
 
 app = FastAPI()
 
-@app.get("/clasificar/")
-def clasificar_producto(descripcion: str = Query(..., min_length=3)) -> List[dict]:
+@app.get("/clasificar/", response_model=List[Dict])
+def clasificar_producto(descripcion: str = Query(..., min_length=3)):
     """Busca códigos arancelarios que coincidan con la descripción ingresada."""
     resultados = [item for item in nomenclador_sistema_armonizado if descripcion.lower() in item["descripcion"].lower()]
     
-    return {"descripcion_ingresada": descripcion, "resultados": resultados}
+    return resultados  # Devolvemos solo la lista, no un diccionario
